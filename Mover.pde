@@ -12,8 +12,12 @@ class Mover {
   float r;
   PImage img;
   float scalar;
+  // manupulation
   boolean mousePress = false;
-  float ox = 0, oy = 0;
+  boolean drag = false;
+  float ox = 0, oy = 0; // mouse hold offset
+  // sitting state
+  boolean sitting = false;
 
   Mover(float r_, float x, float y) {
     r = r_;
@@ -66,7 +70,9 @@ class Mover {
     stroke(0);
     strokeWeight(1);
     imageMode(CENTER);
+    blendMode(sitting ? ADD : BLEND);
     image(img,0, 0, r * 2, img.height*r*2/img.width);
+    blendMode(BLEND);
     noFill();
     // ellipse(0,0,r*2,r*2);
     // Let's add a line so we can see the rotation
@@ -74,34 +80,47 @@ class Mover {
     popMatrix();
   }
 
+  PVector getPosition() {
+    Vec2 p = box2d.coordWorldToPixels(body.getPosition());
+    return new PVector(p.x, p.y);
+  }
+
+  void setPosition(float x, float y) {
+    Vec2 p = box2d.coordPixelsToWorld(new Vec2(mouseX - ox, mouseY - oy));
+    body.setTransform(p, body.getAngle());
+  }
+
   void mouseMoved() {
 
   }
 
   void mousePressed() {
-    Vec2 v = box2d.coordWorldToPixels(body.getPosition());
-    float d = dist(v.x, v.y, mouseX, mouseY);
-    if (d <= chairRadius) {
-        mousePress = true;
-        ox = mouseX - v.x;
-        oy = mouseY - v.y;
+    if (inside(mouseX, mouseY)) {
+      drag = false;
+      mousePress = true;
+      Vec2 v = box2d.coordWorldToPixels(body.getPosition());
+      ox = mouseX - v.x;
+      oy = mouseY - v.y;
     }
   }
 
   void mouseDragged() {
+    drag = true;
     if (mousePress) {
-        println("moving");
-
-        Vec2 p = box2d.coordPixelsToWorld(new Vec2(mouseX - ox, mouseY - oy));
-
-        body.setTransform(p, body.getAngle());
+      setPosition(mouseX - ox, mouseY - oy);
     }
-    //body.applyForce(new Vec2(mouseX, mouseY), body.getWorldCenter());
-
-
   }
 
   void mouseReleased() {
     mousePress = false;
+    if (inside(mouseX, mouseY) && !drag) {
+      sitting = !sitting;
+    }
+  }
+
+  boolean inside(float x, float y) {
+    Vec2 v = box2d.coordWorldToPixels(body.getPosition());
+    float d = dist(v.x, v.y, x, y);
+    return d <= chairRadius;
   }
 }

@@ -43,15 +43,13 @@ class Boid extends Flagellum {
 
       if (slowdown && d < 100) {
         desired.mult(maxSpeed * (d / 100));
-      }
-      else {
+      } else {
         desired.mult(maxSpeed);
       }
 
       steer = PVector.sub(desired, velocity);
       steer.limit(maxForce);
-    }
-    else {
+    } else {
       steer = new PVector(0, 0);
     }
 
@@ -83,16 +81,12 @@ class Boid extends Flagellum {
 
   void evade(PVector target) {
     timeCheck = true;
-    if (dist(target.x, target.y, location.x, location.y) < 100) {
-
+    //if (dist(target.x, target.y, location.x, location.y) < 100) {
       float lookAhead = location.dist(target) / (maxSpeed * 2);
       PVector predictedTarget = new PVector(target.x - lookAhead, target.y - lookAhead);
       flee(predictedTarget);
-
-
-    }
+    //}
   }
-
 
   /*  WANDER  */
   void wander() {
@@ -112,7 +106,6 @@ class Boid extends Flagellum {
     seek(target);
   }
 
-
   void run() {
     if (dist(mouseX, mouseY, location.x, location.y) < 50) {
       text("HELLO!",location.x+10,location.y);
@@ -121,7 +114,6 @@ class Boid extends Flagellum {
     borders();
     display();
   }
-
 
   void update() {
     velocity.add(acceleration);
@@ -143,8 +135,7 @@ class Boid extends Flagellum {
           // this formula needs a proper look
           maxSpeed = rushSpeed - (norm(timeCount, 0, timeCountLimit) * 3);
           timeCount++;
-        }
-        else if (timeCount >= timeCountLimit) {
+        } else if (timeCount >= timeCountLimit) {
           // once the time cicle is complete
           // resets timer variables,
           timeCount = 0;
@@ -157,7 +148,6 @@ class Boid extends Flagellum {
       }
     }
   }
-
 
   // control skin tint, for now it picks a random dark grey color
   int opacity = 0;
@@ -189,5 +179,4 @@ class Boid extends Flagellum {
     if (location.y < -skin.width) location.y = height;
     if (location.y > height + skin.width) location.y = 0;
   }
-
 }

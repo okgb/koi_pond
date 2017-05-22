@@ -8,12 +8,12 @@
 // Fixed Attractor (this is redundant with Mover)
 
 class Attractor {
-  
+
   // We need to keep track of a Body and a radius
   Body body;
   float r;
- float G = 1; // Strength of force
- float damp=20;
+  float G = 1; // Strength of force
+  float damp=20;
   Attractor(float r_, float x, float y) {
     r = r_;
     // Define a body
@@ -26,9 +26,8 @@ class Attractor {
     // Make the body's shape a circle
     CircleShape cs = new CircleShape();
     cs.m_radius = box2d.scalarPixelsToWorld(r);
-    
-    body.createFixture(cs,1);
 
+    body.createFixture(cs,1);
   }
 
 
@@ -36,16 +35,16 @@ class Attractor {
   // We are computing this in "world" coordinates
   // No need to convert to pixels and back
   Vec2 attract(Mover m) {
-   
- 
+
+
     // clone() makes us a copy
     //body.setLinearVelocity(new Vec2(mouseX,mouseY));
-     Boid wanderBoid = (Boid)wanderers.get(0);
-    
-    Vec2 pos = box2d.coordPixelsToWorld(wanderBoid.location.x,wanderBoid.location.y);//body.getWorldCenter();  
+    Boid wanderBoid = (Boid)wanderers.get(0);
+
+    Vec2 pos = box2d.coordPixelsToWorld(wanderBoid.location.x,wanderBoid.location.y);//body.getWorldCenter();
     if(mousePressed){
       pos = box2d.coordPixelsToWorld(mouseX,mouseY);
-      
+
        if(G>-10){
       G=(G-10)*0.1;
       }
@@ -63,10 +62,10 @@ class Attractor {
       }
     //m.body.setLinearDamping(20f);
     //pos = box2d.coordPixelsToWorld(mouseX,mouseY);
-    } 
-    
+    }
+
      //m.body.setLinearDamping(damp);
-    
+
     Vec2 moverPos = m.body.getWorldCenter();
     // Vector pointing from mover to attractor
     Vec2 force = pos.sub(moverPos);
@@ -96,7 +95,8 @@ class Attractor {
     fill(0);
     stroke(0);
     strokeWeight(1);
-    //ellipse(0,0,r*2,r*2);
+    ellipse(0,0,r*2,r*2);
+    ellipse(0,0,100, 100);
     popMatrix();
   }
 }
