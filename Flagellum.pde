@@ -23,7 +23,7 @@ class Flagellum {
     skin = loadImage(_skin);
 
     // random image resize
-    float scalar = random(0.2, 0.7);
+    float scalar = random(0.3, 0.5); //0.2, 0.7
     skin.resize(int(skin.width * scalar), int(skin.height * scalar));
 
     // nodes spacing

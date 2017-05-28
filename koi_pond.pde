@@ -7,8 +7,7 @@ import org.jbox2d.dynamics.*;
 // A reference to our box2d world
 Box2DProcessing box2d;
 
-// Movers, jsut like before!
-Mover[] chairs = new Mover[6];
+Chair[] chairs = new Chair[6];
 
 // Attractor, just like before!
 //Attractor a;
@@ -21,9 +20,9 @@ ArrayList wanderers = new ArrayList();     // stores wander behavior objects
 PVector mouseAvoidTarget, mouseAttractTarget;                // use mouse location as object to evade
 boolean press = false;                     // check is mouse is press
 //int mouseAvoidScope = 300;
-float chairRadius = 80;
-float targetFromChair = 120;
-float targetMinimumDistance = 15;
+float chairRadius = 120;
+float targetFromChair = 150;
+float targetMinimumDistance = 10;
 float attractionStartDistance = 300; // same as mouseAvoidScope
 
 String[] skin = new String[10];
@@ -50,7 +49,7 @@ void setup() {
   box2d.setGravity(0,0);
 
   for (int i = 0; i < chairs.length; i++) {
-    chairs[i] = new Mover(chairRadius, random(width), random(height));
+    chairs[i] = new Chair(chairRadius, random(width), random(height));
   }
   //a = new Attractor(0,0,0);
 }
@@ -72,7 +71,7 @@ void draw() {
 
 
 
-    Mover chair = getClosestChair(wanderBoid.location);
+    Chair chair = getClosestChair(wanderBoid.location);
     PVector c = chair.getPosition();
     float dFromChair = dist(c.x, c.y, wanderBoid.location.x, wanderBoid.location.y);
     if (dFromChair < targetFromChair) {
@@ -209,7 +208,7 @@ PVector getTarget(PVector boid, PVector chair) {
   float y = -sin(a) * targetFromChair;
 
   // don't return small distances, so that kois can roam free
-  //if (dist(0, 0, x, y) < targetMinimumDistance) return null;
+  if (dist(0, 0, x, y) < targetMinimumDistance) return null;
 
   pushStyle();
   noFill();
@@ -233,8 +232,8 @@ PVector getTarget(PVector boid, PVector chair) {
   return p;
 }
 
-Mover getClosestChair(PVector p) {
-  Mover closest = null;
+Chair getClosestChair(PVector p) {
+  Chair closest = null;
   float minD = width + height; // too distant
   for (int i = 0; i < chairs.length; i++){
     PVector c = chairs[i].getPosition();
