@@ -16,14 +16,14 @@ class Chair {
   // sitting state
   boolean sitting = false;
 
-  Chair(float r, float x, float y) {
+  Chair(float x, float y, float r, float a) {
     this.r = r;
-    this.a = random(-PI, PI);
+    this.a = a;
     this.pos = new PVector(x, y);
-    img=loadImage("data/poppy.gif");//"data/l"+(int)random(1,5)+".gif");
+    img = loadImage("data/poppy.gif");//"data/l"+(int)random(1,5)+".gif");
   }
 
-  void display() {
+  void draw() {
     // Get its angle of rotation
     pushMatrix();
     translate(pos.x,pos.y);
@@ -36,9 +36,9 @@ class Chair {
     image(img, 0, 0, r * 2, img.height * r * 2 / img.width);
     blendMode(BLEND);
     noFill();
-    // ellipse(0,0,r*2,r*2);
-    // Let's add a line so we can see the rotation
-    // line(0,0,r,0);
+     // ellipse(0,0,r*2,r*2);
+     // Let's add a line so we can see the rotation
+     // line(0,0,r,0);
     popMatrix();
   }
 

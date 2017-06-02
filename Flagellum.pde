@@ -1,7 +1,7 @@
 /*
-    Fish locomotion class
-    Logic from levitated.com, simulates wave propagation through a kinetic array of nodes
-    also some bits from flight404 blog
+  Fish locomotion class
+  Logic from levitated.com, simulates wave propagation through a kinetic array of nodes
+  also some bits from flight404 blog
 */
 class Flagellum {
 
@@ -18,26 +18,23 @@ class Flagellum {
 
   PImage skin;
 
-
-  Flagellum(String _skin) {
-    skin = loadImage(_skin);
+  Flagellum(String skin) {
+    this.skin = loadImage(skin);
 
     // random image resize
     float scalar = random(0.3, 0.5); //0.2, 0.7
-    skin.resize(int(skin.width * scalar), int(skin.height * scalar));
+    this.skin.resize(int(this.skin.width * scalar), int(this.skin.height * scalar));
 
     // nodes spacing
-    skinXspacing = skin.width / float(numNodes)+ 0.5;
-    skinYspacing = skin.height / 2;
+    skinXspacing = this.skin.width / float(numNodes)+ 0.5;
+    skinYspacing = this.skin.height / 2;
 
     // initialize nodes
     for (int n = 0; n < numNodes; n++) node[n] = new Node();
-
   }
 
 
   void move() {
-
     // head node
     node[0].x = cos(radians(theta));
     node[0].y = sin(radians(theta));
@@ -58,8 +55,7 @@ class Flagellum {
     }
   }
 
-
-  void display() {
+  void draw() {
     noStroke();
     beginShape(QUAD_STRIP);
     texture(skin);
@@ -86,4 +82,9 @@ class Flagellum {
     endShape();
   }
 
+}
+
+class Node {
+  float x;
+  float y;
 }

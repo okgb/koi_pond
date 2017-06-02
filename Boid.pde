@@ -1,7 +1,7 @@
 /*
 Steer behavior class, to control/simulate natural movement
- the idea is to make some behaviors interactive like
- */
+the idea is to make some behaviors interactive like
+*/
 
 class Boid extends Flagellum {
 
@@ -12,26 +12,21 @@ class Boid extends Flagellum {
   float maxForce;
   float maxSpeed;
   float wandertheta;
-  float rushSpeed = random(3, 6);
+  float rushSpeed = 3;
 
   boolean timeCheck = false;                 // check if time interval is complete
   int timeCount = 0;                         // time cicle index
   int lastTimeCheck = 0;                     // stores last time check
   int timeCountLimit = 10;                   // max time cicles
 
-
-  Boid (String _skin, PVector _location, float _maxSpeed, float _maxForce) {
-    super(_skin);
-
-    location = _location.get();
-    velocity = new PVector(0, 0);
-    acceleration = new PVector(0, 0);
-    maxForce = _maxForce;
-    maxSpeed = _maxSpeed;
-
-     //if(random(1,10)%2!=0){println("ping");super.theta+=180;}
+  Boid (String skin, PVector location, float maxSpeed, float maxForce) {
+    super(skin);
+    this.location = location.get();
+    this.velocity = new PVector(0, 0);
+    this.acceleration = new PVector(0, 0);
+    this.maxSpeed = maxSpeed;
+    this.maxForce = maxForce;
   }
-
 
   PVector steer(PVector target, boolean slowdown) {
     PVector steer;
@@ -62,20 +57,19 @@ class Boid extends Flagellum {
     acceleration.add(steer(target, false));
   }
 
-  void arrive(PVector target) {
-    acceleration.add(steer(target, true));
-  }
+  // void arrive(PVector target) {
+  //   acceleration.add(steer(target, true));
+  // }
 
   void flee(PVector target) {
     acceleration.sub(steer(target, false));
   }
 
-
-
   /*  PURSUE - EVADE  */
   void pursue(PVector target) {
     float lookAhead = location.dist(target) / maxSpeed;
-    PVector predictedTarget = new PVector(target.x + lookAhead, target.y + lookAhead);
+    //PVector predictedTarget = new PVector(target.x + lookAhead, target.y + lookAhead);
+    PVector predictedTarget = PVector.add(location, target).limit(lookAhead);
     seek(predictedTarget);
   }
 
@@ -112,7 +106,7 @@ class Boid extends Flagellum {
     }
     update();
     borders();
-    display();
+    draw();
   }
 
   void update() {
@@ -153,7 +147,7 @@ class Boid extends Flagellum {
   int opacity = 0;
   int maxOpacity = 0;
 
-  void display() {
+  void draw() {
     if (opacity < 255) opacity += 1;
     else opacity = 255;
     tint(maxOpacity, maxOpacity, maxOpacity, opacity);
@@ -163,7 +157,7 @@ class Boid extends Flagellum {
     pushMatrix();
     translate(location.x, location.y);
     //rotate(theta);
-    super.display();
+    super.draw();
     popMatrix();
     noTint();
 
