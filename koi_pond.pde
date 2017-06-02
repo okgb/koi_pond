@@ -1,5 +1,7 @@
 // KOI FISH POND
 
+boolean controlsVisible = true;
+
 Chairs chairs;
 Controller controller;
 Boids boids;
@@ -45,18 +47,7 @@ void draw() {
   chairs.draw();
   blobber.detect();
 
-/////
-  // bleh
-  pushStyle();
-  noStroke();
-  fill(128);
-  rect(0, 0, blobber.getWidth(), blobber.getHeight());
-  popStyle();
-
-
-//////
-
-  blobber.draw();
+  if (controlsVisible) blobber.draw();
 }
 
 void mouseMoved() {
@@ -80,5 +71,18 @@ void controlEvent(ControlEvent theControlEvent) {
 }
 
 void keyPressed() {
-  //saveFrame("##.jpg");
+  switch(key) {
+    case 'h':
+      controller.hide();
+      break;
+    case 's':
+      controller.show();
+      break;
+    case 'b':
+      controlsVisible = !controlsVisible;
+      break;
+    case 'f':
+      //saveFrame("##.jpg");
+      break;
+  }
 }
