@@ -13,7 +13,7 @@ class Blobber {
 
   PGraphics blobs;
   PGraphics kImages;
-  PImage kImage;
+  PImage[] kImage;
   PShader blur;
   Kinect2[] kinects;
   int w, h;
@@ -25,9 +25,11 @@ class Blobber {
       kinects[i].initDepth();
       kinects[i].initDevice(i);
     }
+    kImage = new PImage[2]; // this has to be 2 for the rest to work
 
-    w = kinects[0].depthWidth / 2;
-    h = kinects[0].depthHeight;
+    // because rotating 90 degrees
+    w = kinects[0].depthHeight;
+    h = kinects[0].depthWidth / 2;
 
     detections = new ArrayList<BlobDetection>(3);
     for(int i = 0; i < 3; i++) {
@@ -53,10 +55,27 @@ class Blobber {
 
     // assemble 2 kinect images
     int overlap = controller.kinectOverlap;
+    //kImages.beginDraw();
+    //kImages.background(0);
+    //kImages.endDraw();
+
+    for (int i = 0; i < 2; i++) {
+      kImage[i] = kinects[i].getDepthImage();
+      kImage[i].loadPixels();
+    }
+    kImages.loadPixels();
+    int kw = h;
+    int kh = w / 2;
+    for (int i = 0; i < w * h; i++) {
+      int k = i % w < kh ? 0 : 1;
+      int x = kw - (i / w);
+      int y = i % w - k * kh;
+      kImages.pixels[i] = kImage[k].pixels[x * 2 + y * 2 * kw];
+    }
+    kImages.updatePixels();
+
+    // overlay edges
     kImages.beginDraw();
-    kImages.background(0);
-    kImages.copy(kinects[0].getDepthImage(), 0, 0, w * 2, h - overlap, 0, overlap / 2, w, h / 2 - overlap / 2);
-    kImages.copy(kinects[1].getDepthImage(), 0, overlap / 2, w * 2, h - overlap / 2, 0, h / 2, w, h / 2 - overlap / 4);
     kImages.fill(0);
     kImages.noStroke();
     kImages.rect(0, 0, w, controller.kinectCutoffTop);
