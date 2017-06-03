@@ -10,7 +10,9 @@ class Chairs {
     chairs.add(new Chair(x, y, r, a));
   }
 
-  void assignChairs(ArrayList<Detected> detectedChairs) {
+  void assignChairs(ArrayList<Detected> d) {
+
+    ArrayList<Detected> detectedChairs = new ArrayList<Detected>(d);
 
     // assign closest
     for (Chair chair : chairs) {
@@ -44,8 +46,22 @@ class Chairs {
     }
   }
 
-  void assignSitters(ArrayList<Detected> detectedSitters) {
+  void assignSitters(ArrayList<Detected> d) {
 
+    ArrayList<Detected> detectedSitters = new ArrayList<Detected>(d);
+
+    // assign closest
+    for (Chair chair : chairs) {
+      chair.sitting = false;
+      for (Detected detected : detectedSitters) {
+        if (detected.getCenter().mult(width * 1.0 / blobber.w).dist(chair.getCenter()) < chair.r) { // if within perimiter
+          chair.sitting = true; // fix ration screen/kinect
+          PVector direction = detected.getCenter().mult(width * 1.0 / blobber.w).sub(chair.getCenter());
+          chair.setAngle(atan2(direction.y, direction.x));
+          break;
+        }
+      }
+    }
   }
 
   Chair getClosest(PVector v) {

@@ -5,6 +5,7 @@ boolean controlsVisible = true;
 Chairs chairs;
 Controller controller;
 Boids boids;
+Drops drops;
 
 float chairRadius = 120;
 float targetFromChair = 150;
@@ -34,6 +35,8 @@ void setup() {
   boids = new Boids();
   for (int i = 0; i < 6; i++) boids.addBoid();
 
+  drops = new Drops();
+
   controller = new Controller(this);
   blobber = new Blobber(this);
 }
@@ -42,12 +45,16 @@ void setup() {
 void draw() {
   blobber.detect();
   chairs.assignChairs(blobber.detectedChairs);
+  chairs.assignSitters(blobber.detectedSitters);
+  drops.assignWalkers(blobber.detectedWalkers);
 
   blendMode(BLEND);
   background(#30819D);
   boids.draw();
+  drops.draw();
   chairs.draw();
-
+  fill(0, 128);
+  //rect(0, 0, width, height);
   if (controlsVisible) blobber.draw();
 }
 
@@ -61,6 +68,7 @@ void mousePressed() {
 
 void mouseDragged() {
   chairs.mouseDragged();
+  drops.addDrop(mouseX, mouseY);
 }
 
 void mouseReleased() {

@@ -44,8 +44,8 @@ class Chair {
 
     // Get its angle of rotation
     pushMatrix();
-    translate(pos.x,pos.y);
-    rotate(a);
+    translate(pos.x,pos.y,1);
+    rotate(a + HALF_PI); // ???
     fill(150);
     stroke(0);
     strokeWeight(1);
@@ -76,6 +76,10 @@ class Chair {
     PVector d = c.sub(pos);
     d.mult(0.1);
     pos.add(d);
+  }
+
+  void setAngle(float na) {
+    a += (na - a) * 0.1;
   }
 
   void mouseMoved() {
