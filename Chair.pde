@@ -5,6 +5,8 @@
 
 class Chair {
 
+  static final int REMOVE_COUNT = 500; // frames to wait until it gets removed
+
   float r;
   PImage img;
   PVector pos;
@@ -16,14 +18,30 @@ class Chair {
   // sitting state
   boolean sitting = false;
 
+  int removeCounter;
+  boolean removable;
+
+  Chair(PVector center) {
+    this(center.x, center.y, 150, random(-PI, PI));
+  }
+
   Chair(float x, float y, float r, float a) {
     this.r = r;
     this.a = a;
     this.pos = new PVector(x, y);
     img = loadImage("data/poppy.gif");//"data/l"+(int)random(1,5)+".gif");
+    removeCounter = REMOVE_COUNT;
+    removable = false;
   }
 
   void draw() {
+
+    if (removable) {
+      --removeCounter;
+    } else {
+      removeCounter = REMOVE_COUNT;
+    }
+
     // Get its angle of rotation
     pushMatrix();
     translate(pos.x,pos.y);
@@ -42,13 +60,22 @@ class Chair {
     popMatrix();
   }
 
-  PVector getPosition() {
+  void initiateRemoval() {
+    removable = true;
+  }
+
+  boolean removable() {
+    return removable && removeCounter <= 0;
+  }
+
+  PVector getCenter() {
     return this.pos;
   }
 
-  void setPosition(float x, float y) {
-    pos.x = x;
-    pos.y = y;
+  void setCenter(PVector c) {
+    PVector d = c.sub(pos);
+    d.mult(0.1);
+    pos.add(d);
   }
 
   void mouseMoved() {
@@ -67,7 +94,7 @@ class Chair {
   void mouseDragged() {
     drag = true;
     if (mousePress) {
-      setPosition(mouseX - ox, mouseY - oy);
+      setCenter(new PVector(mouseX - ox, mouseY - oy));
     }
   }
 

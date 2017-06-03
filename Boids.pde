@@ -50,16 +50,20 @@ class Boids {
     // fish motion wander behavior
     for (Boid boid : boids) {
       Chair chair = chairs.getClosest(boid.location);
-      PVector c = chair.getPosition();
-      float dFromChair = dist(c.x, c.y, boid.location.x, boid.location.y);
-      if (dFromChair < targetFromChair) {
-        boid.timeCount = 0;
-        boid.evade(c);
-      } else if (chair.sitting && dFromChair < attractionStartDistance) {
-        boid.timeCount = 0;
-        PVector target = getTarget(boid.location, c);
-        if (target != null) {
-          boid.pursue(target);
+      if (chair != null) {
+        PVector c = chair.getCenter();
+        float dFromChair = dist(c.x, c.y, boid.location.x, boid.location.y);
+        if (dFromChair < targetFromChair) {
+          boid.timeCount = 0;
+          boid.evade(c);
+        } else if (chair.sitting && dFromChair < attractionStartDistance) {
+          boid.timeCount = 0;
+          PVector target = getTarget(boid.location, c);
+          if (target != null) {
+            boid.pursue(target);
+          } else {
+            boid.wander();
+          }
         } else {
           boid.wander();
         }
@@ -67,11 +71,6 @@ class Boids {
         boid.wander();
       }
       boid.run();
-
-    // for (int i = 0; i < chairs_old.length; i++) {
-    //   chairs_old[i].display();
-    // }
     }
-
   }
 }

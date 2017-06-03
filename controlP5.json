@@ -1,0 +1,29 @@
+{
+  "/chair cutoff": {
+    "min": 0,
+    "max": 255,
+    "value": 140
+  },
+  "/sitter size": {
+    "lowValue": 38,
+    "highValue": 84
+  },
+  "/sitter cutoff": {
+    "min": 0,
+    "max": 255,
+    "value": 119.00000762939453
+  },
+  "/chair size": {
+    "lowValue": 30.000001907348633,
+    "highValue": 136
+  },
+  "/floor cutoff": {
+    "min": 0,
+    "max": 255,
+    "value": 177
+  },
+  "/walker size": {
+    "lowValue": 36,
+    "highValue": 100
+  }
+}

@@ -30,7 +30,6 @@ void setup() {
   for (int n = 0; n < skin.length; n++) skin[n] = "skin-" + n + ".png";
 
   chairs = new Chairs();
-  for (int i = 0; i < 6; i++) chairs.addChair(random(width), random(height), chairRadius, random(-PI, PI));
 
   boids = new Boids();
   for (int i = 0; i < 6; i++) boids.addBoid();
@@ -41,11 +40,13 @@ void setup() {
 
 
 void draw() {
+  blobber.detect();
+  chairs.assignChairs(blobber.detectedChairs);
+
   blendMode(BLEND);
   background(#30819D);
   boids.draw();
   chairs.draw();
-  blobber.detect();
 
   if (controlsVisible) blobber.draw();
 }
@@ -78,7 +79,7 @@ void keyPressed() {
     case 's':
       controller.show();
       break;
-    case 'b':
+    case 'k':
       controlsVisible = !controlsVisible;
       break;
     case 'f':

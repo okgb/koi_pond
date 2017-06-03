@@ -124,19 +124,21 @@ class Blobber {
   }
 
   void draw() {
+    pushStyle();
     imageMode(CORNER);
     image((PImage)blobs, 0, 0);
     image(kImage, w, 0);
     strokeWeight(1);
     noFill();
     for (Detected chairBlob : detectedChairs) {
-      chairBlob.draw(color(255, 0, 0), color(0, 255, 255));
+      chairBlob.draw(color(255, 0, 255), color(0, 255, 0));
     }
     for (Detected sitterBlob : detectedSitters) {
-      sitterBlob.draw(color(0, 255, 0), color(255, 0, 255));
+      sitterBlob.draw(color(0, 255, 255), color(0, 0, 255));
     }
     for (Detected walkerBlob : detectedWalkers) {
-      walkerBlob.draw(color(0, 0, 255), color(255, 255, 0));
+      walkerBlob.draw(color(255, 255, 0), color(0, 0, 255));
     }
+    popStyle();
   }
 }
