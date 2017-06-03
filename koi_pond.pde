@@ -33,7 +33,7 @@ void setup() {
   chairs = new Chairs();
 
   boids = new Boids();
-  for (int i = 0; i < 6; i++) boids.addBoid();
+  for (int i = 0; i < 20; i++) boids.addBoid();
 
   drops = new Drops();
 
@@ -43,10 +43,14 @@ void setup() {
 
 
 void draw() {
-  blobber.detect();
-  chairs.assignChairs(blobber.detectedChairs);
-  chairs.assignSitters(blobber.detectedSitters);
-  drops.assignWalkers(blobber.detectedWalkers);
+  if (frameCount % 60 == 0) println(frameRate);
+
+  //if (frameCount % 3 == 0) {
+    blobber.detect();
+    chairs.assignChairs(blobber.detectedChairs);
+    chairs.assignSitters(blobber.detectedSitters);
+    drops.assignWalkers(blobber.detectedWalkers);
+  //}
 
   blendMode(BLEND);
   background(#30819D);
@@ -68,7 +72,6 @@ void mousePressed() {
 
 void mouseDragged() {
   chairs.mouseDragged();
-  drops.addDrop(mouseX, mouseY);
 }
 
 void mouseReleased() {

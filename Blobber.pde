@@ -2,6 +2,7 @@ import org.openkinect.processing.*;
 import blobDetection.*;
 
 class Blobber {
+
   EdgeVertex eA, eB;
 
   ArrayList<BlobDetection> detections;
@@ -11,18 +12,22 @@ class Blobber {
   ArrayList<Detected> detectedWalkers;
 
   PGraphics blobs;
+  PGraphics kImages;
   PImage kImage;
   PShader blur;
-  Kinect2 kinect;
+  Kinect2[] kinects;
   int w, h;
 
   Blobber(PApplet p) {
-    kinect = new Kinect2(p);
-    kinect.initDepth();
-    kinect.initDevice(); // (0)?
+    kinects = new Kinect2[2]; // this has to be 2 for the rest to work
+    for (int i = 0; i < 2; i++) {
+      kinects[i] = new Kinect2(p);
+      kinects[i].initDepth();
+      kinects[i].initDevice(i);
+    }
 
-    w = kinect.depthWidth;
-    h = kinect.depthHeight;
+    w = kinects[0].depthWidth / 2;
+    h = kinects[0].depthHeight;
 
     detections = new ArrayList<BlobDetection>(3);
     for(int i = 0; i < 3; i++) {
@@ -32,17 +37,35 @@ class Blobber {
       detections.add(detection);
     }
     blobs = createGraphics(w, h, P3D);
+    kImages = createGraphics(w, h, P3D);
     blur = loadShader("blur.glsl");
-  }
-
-  void detect() {
 
     detectedChairs = new ArrayList<Detected>();
     detectedSitters = new ArrayList<Detected>();
     detectedWalkers = new ArrayList<Detected>();
+  }
 
-    kImage = kinect.getDepthImage();
-    kImage.loadPixels();
+  void detect() {
+
+    detectedChairs.clear();
+    detectedSitters.clear();
+    detectedWalkers.clear();
+
+    // assemble 2 kinect images
+    int overlap = controller.kinectOverlap;
+    kImages.beginDraw();
+    kImages.background(0);
+    kImages.copy(kinects[0].getDepthImage(), 0, 0, w * 2, h - overlap, 0, overlap / 2, w, h / 2 - overlap / 2);
+    kImages.copy(kinects[1].getDepthImage(), 0, overlap / 2, w * 2, h - overlap / 2, 0, h / 2, w, h / 2 - overlap / 4);
+    kImages.fill(0);
+    kImages.noStroke();
+    kImages.rect(0, 0, w, controller.kinectCutoffTop);
+    kImages.rect(0, h - controller.kinectCutoffBottom, w, controller.kinectCutoffBottom);
+    kImages.rect(0, 0, controller.kinectCutoffLeft, h);
+    kImages.rect(w - controller.kinectCutoffRight, 0, controller.kinectCutoffRight, h);
+    kImages.endDraw();
+
+    kImages.loadPixels();
     blobs.loadPixels();
     int black = color(0);
     int chair = color(255 / 3);
@@ -50,7 +73,7 @@ class Blobber {
     int walker = color(255);
 
     for (int i = 0, n = w * h; i < n; i++) {
-      int c = kImage.pixels[i];
+      int c = kImages.pixels[i];
       float level = brightness(c);
       if (level == 0.0 || level > controller.floorCutoff) { // everything beyond is "floor", do not detect
         blobs.pixels[i] = black;
@@ -127,7 +150,7 @@ class Blobber {
     pushStyle();
     imageMode(CORNER);
     image((PImage)blobs, 0, 0);
-    image(kImage, w, 0);
+    image(kImages, w, 0);
     strokeWeight(1);
     noFill();
     for (Detected chairBlob : detectedChairs) {
