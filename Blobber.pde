@@ -61,7 +61,7 @@ class Blobber {
      * @todo make this one kinect again
      */
     for (int i = 0; i < NUMBER_OF_KINECTS; i++) {
-      kImage[i] = kinects[0].getDepthImage();
+      kImage[i] = kinects[i].getDepthImage();
       kImage[i].loadPixels();
     }
     /**
