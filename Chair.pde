@@ -5,7 +5,7 @@
 
 class Chair {
 
-  static final int REMOVE_COUNT = 50; // frames to wait until it gets removed
+  static final int REMOVE_COUNT = 500; // frames to wait until it gets removed
 
   float r;
   PImage img;
