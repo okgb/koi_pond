@@ -11,6 +11,10 @@ class Blobber {
   ArrayList<Detected> detectedSitters;
   ArrayList<Detected> detectedWalkers;
 
+  static final int NUMBER_OF_KINECTS = 2; // this works only with 1 or 2, because of overlap
+  static final int KINECT_W = 512;
+  static final int KINECT_H = 424;
+
   PGraphics blobs;
   PGraphics kImages;
   PImage[] kImage;
@@ -19,17 +23,17 @@ class Blobber {
   int w, h;
 
   Blobber(PApplet p) {
-    kinects = new Kinect2[2]; // this has to be 2 for the rest to work
-    for (int i = 0; i < 2; i++) {
+    kinects = new Kinect2[NUMBER_OF_KINECTS]; // this has to be 2 for the rest to work
+    for (int i = 0; i < NUMBER_OF_KINECTS; i++) {
       kinects[i] = new Kinect2(p);
       kinects[i].initDepth();
       kinects[i].initDevice(i);
     }
-    kImage = new PImage[2]; // this has to be 2 for the rest to work
+    kImage = new PImage[NUMBER_OF_KINECTS]; // this has to be 2 for the rest to work
 
     // because rotating 90 degrees
-    w = kinects[0].depthHeight;
-    h = kinects[0].depthWidth / 2;
+    w = KINECT_H / 2 * NUMBER_OF_KINECTS;
+    h = KINECT_W / 2;
 
     detections = new ArrayList<BlobDetection>(3);
     for(int i = 0; i < 3; i++) {
@@ -53,24 +57,24 @@ class Blobber {
     detectedSitters.clear();
     detectedWalkers.clear();
 
-    // assemble 2 kinect images
-    int overlap = controller.kinectOverlap;
-    //kImages.beginDraw();
-    //kImages.background(0);
-    //kImages.endDraw();
-
-    for (int i = 0; i < 2; i++) {
-      kImage[i] = kinects[i].getDepthImage();
+    /**
+     * @todo make this one kinect again
+     */
+    for (int i = 0; i < NUMBER_OF_KINECTS; i++) {
+      kImage[i] = kinects[0].getDepthImage();
       kImage[i].loadPixels();
     }
+    /**
+     * @todo end - make this one kinect again
+     */
+
     kImages.loadPixels();
-    int kw = h;
-    int kh = w / 2;
+    int black = color(0);
     for (int i = 0; i < w * h; i++) {
-      int k = i % w < kh ? 0 : 1;
-      int x = kw - (i / w);
-      int y = i % w - k * kh;
-      kImages.pixels[i] = kImage[k].pixels[x * 2 + y * 2 * kw];
+      int k = i % w / (KINECT_H / 2);
+      int x = KINECT_W / 2 - i / w;
+      int y = (i % w - k * KINECT_H / 2) + controller.kinectOverlap * (k == 0 ? -1 : 1);
+      kImages.pixels[i] = y >= KINECT_H / 2 || y < 0 ? black : kImage[k].pixels[x * 2 + y * 2 * KINECT_W];
     }
     kImages.updatePixels();
 
@@ -86,7 +90,7 @@ class Blobber {
 
     kImages.loadPixels();
     blobs.loadPixels();
-    int black = color(0);
+
     int chair = color(255 / 3);
     int sitter = color(255 / 3 * 2);
     int walker = color(255);
